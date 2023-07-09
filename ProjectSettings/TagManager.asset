@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Tree
   - GameManager
+  - Description
   layers:
   - Default
   - TransparentFX

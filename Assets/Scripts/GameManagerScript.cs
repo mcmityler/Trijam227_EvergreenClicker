@@ -22,12 +22,13 @@ public class GameManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _woodAmountText.text = "Wood: " + _woodCollected.ToString();
+        _woodAmountText.text = ": " + _woodCollected.ToString();
+        TreeSpawn();
     }
     public void CollectWood(int m_woodAmount)
     {
         _woodCollected += m_woodAmount;
-        _woodAmountText.text = "Wood: " + _woodCollected.ToString();
+        _woodAmountText.text = ": " + _woodCollected.ToString();
 
     }
 
