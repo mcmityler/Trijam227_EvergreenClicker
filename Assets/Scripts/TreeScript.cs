@@ -14,6 +14,7 @@ public class TreeScript : MonoBehaviour
     [SerializeField] int _woodMulti = 1;
     [SerializeField] GameObject _treeParticlesPrefab;
     [SerializeField] Transform _particleSpawnPoint;
+    int _spawnLocNum = -1;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,11 +32,12 @@ public class TreeScript : MonoBehaviour
         GameObject.FindGameObjectWithTag("Player").GetComponent<AxeScript>().CanSwing(false);
 
     }
-    void SpawnTreeProperties(int m_woodPerChop, int m_health, int m_woodMulti)
+    public void SpawnTreeProperties(int m_woodPerChop, int m_health, int m_woodMulti, int m_spawnLocNum)
     {
         _treeHealth = m_health;
         _woodAmountPerChop = m_woodPerChop;
         _woodMulti = m_woodMulti;
+        _spawnLocNum = m_spawnLocNum;
 
     }
     public void DamageTree(int m_dmg)
@@ -85,7 +87,7 @@ public class TreeScript : MonoBehaviour
         if (_treeHealth <= 0)
         {
             _gameManager.CollectWood(_woodAmountPerChop * _stumpMultiplier * _woodMulti);
-
+            _gameManager.TreeChopped(_spawnLocNum);
             Destroy(this.gameObject);
 
         }
