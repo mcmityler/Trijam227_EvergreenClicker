@@ -10,60 +10,14 @@ public class TreeScript : MonoBehaviour
     [SerializeField] CircleCollider2D _treeTop;
     GameManagerScript _gameManager;
     [SerializeField] int _woodAmountPerChop = 1;
-    [SerializeField] int _SpriteChangeMulti = 2;
+    [SerializeField] int _stumpMultiplier = 2;
+    [SerializeField] int _woodMulti = 1;
+    [SerializeField] GameObject _treeParticlesPrefab;
+    [SerializeField] Transform _particleSpawnPoint;
     // Start is called before the first frame update
     void Start()
     {
         _gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManagerScript>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    public void DamageTree(int m_dmg)
-    {
-        _treeHealth -= m_dmg;
-        ChangeTreeSprite();
-    }
-    void ChangeTreeSprite()
-    {
-        switch (_treeHealth)
-        {
-            case 80:
-                this.gameObject.GetComponent<SpriteRenderer>().sprite = _treeCutSprites[0];
-                _gameManager.CollectWood(_woodAmountPerChop * _SpriteChangeMulti);
-                break;
-            case 60:
-                this.gameObject.GetComponent<SpriteRenderer>().sprite = _treeCutSprites[1];
-                _gameManager.CollectWood(_woodAmountPerChop * _SpriteChangeMulti);
-
-                break;
-            case 40:
-                this.gameObject.GetComponent<SpriteRenderer>().sprite = _treeCutSprites[2];
-                _gameManager.CollectWood(_woodAmountPerChop * _SpriteChangeMulti);
-
-                break;
-            case 20:
-                this.gameObject.GetComponent<SpriteRenderer>().sprite = _treeCutSprites[3];
-                _gameManager.CollectWood(_woodAmountPerChop * _SpriteChangeMulti);
-
-                _treeTop.enabled = false;
-                _treebox.enabled = false;
-                break;
-            default:
-                _gameManager.CollectWood(_woodAmountPerChop);
-
-                break;
-        }
-        if (_treeHealth <= 0)
-        {
-            _gameManager.CollectWood(_woodAmountPerChop * _SpriteChangeMulti);
-
-            Destroy(this.gameObject);
-
-        }
     }
     void OnMouseOver()
     {
@@ -76,5 +30,64 @@ public class TreeScript : MonoBehaviour
     {
         GameObject.FindGameObjectWithTag("Player").GetComponent<AxeScript>().CanSwing(false);
 
+    }
+    void SpawnTreeProperties(int m_woodPerChop, int m_health, int m_woodMulti)
+    {
+        _treeHealth = m_health;
+        _woodAmountPerChop = m_woodPerChop;
+        _woodMulti = m_woodMulti;
+
+    }
+    public void DamageTree(int m_dmg)
+    {
+        _treeHealth -= m_dmg;
+        ChangeTreeSprite();
+
+
+        GameObject m_treeParticles = Instantiate(_treeParticlesPrefab, _particleSpawnPoint.position, _treeParticlesPrefab.transform.rotation);
+        if (_treeHealth > 0)
+        {
+            _gameManager.CollectWood(_woodAmountPerChop * _woodMulti);
+
+
+            m_treeParticles.GetComponent<TreeParticleScript>().SetNumber(_woodAmountPerChop * _woodMulti);
+        }
+        else
+        {
+            m_treeParticles.GetComponent<TreeParticleScript>().SetNumber(_woodAmountPerChop * _woodMulti * _stumpMultiplier);
+
+        }
+
+
+    }
+    void ChangeTreeSprite()
+    {
+        switch (_treeHealth)
+        {
+            case 80:
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = _treeCutSprites[0];
+                break;
+            case 60:
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = _treeCutSprites[1];
+
+                break;
+            case 40:
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = _treeCutSprites[2];
+
+                break;
+            case 20:
+                this.gameObject.GetComponent<SpriteRenderer>().sprite = _treeCutSprites[3];
+
+                _treeTop.enabled = false;
+                _treebox.enabled = false;
+                break;
+        }
+        if (_treeHealth <= 0)
+        {
+            _gameManager.CollectWood(_woodAmountPerChop * _stumpMultiplier * _woodMulti);
+
+            Destroy(this.gameObject);
+
+        }
     }
 }

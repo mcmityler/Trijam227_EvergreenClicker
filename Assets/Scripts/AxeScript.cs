@@ -10,6 +10,8 @@ public class AxeScript : MonoBehaviour
     bool SwingingNow = false;
     GameObject _currentTree = null;
     [SerializeField] int _axeDmg = 10;
+    [SerializeField] GameObject _slashParticlePrefab;
+    [SerializeField] Transform _slashSpawnPoint;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +45,8 @@ public class AxeScript : MonoBehaviour
         Debug.Log("got wood");
         SwingingNow = false;
         _currentTree.GetComponent<TreeScript>().DamageTree(_axeDmg);
+        Instantiate(_slashParticlePrefab, _slashSpawnPoint.position, _slashParticlePrefab.transform.rotation);
+
     }
     public void CanSwing(bool m_canSwing) //am i allowed to swing (sent from tree)
     {
